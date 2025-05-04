@@ -95,6 +95,7 @@ dependencies:
   bloc: ^9.0.0
   flutter_bloc: ^9.1.0
   shared_preferences: ^2.2.3
+  device_preview: ^1.2.0
 
   accordion: ^2.6.0
   share_plus: ^10.1.4

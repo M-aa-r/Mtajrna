@@ -72,7 +72,7 @@ class StoreCubit extends Cubit<StoreState> {
     try {
       var response = await FirebaseFirestore.instance
           .collection('user')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .doc(FirebaseAuth.instance.currentUser?.uid ?? '')
           .get();
       log('+++++++++++++++++++++++++++++');
       log(response.toString());
@@ -211,8 +211,18 @@ class StoreCubit extends Cubit<StoreState> {
           .get();
       log('+++++++++++++++++++++++++++++');
       log(response.toString());
-      userData = UserModel.fromJson(response.data()!);
-      favoriteSelected = userData!.favorite;
+      final data = response.data();
+      if (data != null) {
+        userData = UserModel.fromJson(data);
+        if (userData != null && userData!.favorite != null) {
+          favoriteSelected = userData!.favorite;
+        } else {
+          favoriteSelected = [];
+        }
+      } else {
+        userData = null;
+        favoriteSelected = [];
+      }
       log('+++++++++++++++++++++++++++++');
       emit(UserDataSuccess());
     } on Exception catch (e) {
@@ -233,7 +243,7 @@ class StoreCubit extends Cubit<StoreState> {
       emit(FavoritesLoading());
       await FirebaseFirestore.instance
           .collection("user")
-          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .doc(FirebaseAuth.instance.currentUser?.uid ?? '')
           .update({
         "favorite": favoriteSelected,
       });
@@ -251,8 +261,8 @@ class StoreCubit extends Cubit<StoreState> {
       emit(FavoritesLoading());
       await FirebaseFirestore.instance
           .collection("user")
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .update({
+.doc(FirebaseAuth.instance.currentUser?.uid ?? '')         
+ .update({
         "favorite": favoriteSelected,
       });
       emit(FavoriteSelected());
@@ -269,8 +279,3 @@ class StoreCubit extends Cubit<StoreState> {
     emit(SearchStoreSuccess());
   }
 }
-
-
-
-
-
